@@ -98,8 +98,8 @@ for i = 1:m
 end
 % Theta1_grad = [zeros(hidden_layer_size,1) Theta1_grad / m];
 % Theta2_grad = [zeros(num_labels,1) Theta2_grad / m];
-Theta1_grad = Theta1_grad / m;
-Theta2_grad = Theta2_grad / m;
+Theta1_grad = Theta1_grad / m + lambda / m * [zeros(hidden_layer_size, 1), Theta1(:,2:end)];
+Theta2_grad = Theta2_grad / m + lambda / m * [zeros(num_labels, 1), Theta2(:,2:end)];
 
 % Part 3 -------------------------------------------------------------
 
