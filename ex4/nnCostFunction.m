@@ -29,6 +29,8 @@ m = size(X, 1);
 J = 0;
 Theta1_grad = zeros(size(Theta1));
 Theta2_grad = zeros(size(Theta2));
+% Theta1_grad = zeros(hidden_layer_size, input_layer_size);
+% Theta2_grad = zeros(num_labels, hidden_layer_size);
 
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the code by working through the
@@ -62,25 +64,45 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+% Part 1 -------------------------------------------------------------
+
+Z2 = [ones(m,1) X] * Theta1';
+A2 = sigmoid(Z2);
+
+Z3 = [ones(m,1) A2] * Theta2';
+A3 = sigmoid(Z3);
+
+h = A3;
+
+y_vt = repmat([1:num_labels], m, 1) == y;
+
+J_vt = -1/m * ( y_vt .* log(h) + (1-y_vt) .* log(1-h) );
+
+reg_vt = lambda / (2 * m) * ( [ Theta1(:, 2:end)(:) ; Theta2(:, 2:end)(:) ] .^ 2 );
+
+J = sum( J_vt(:) ) + sum ( reg_vt );
 
 
+% Part 2 -------------------------------------------------------------
+for i = 1:m
+  a1 = X(i,:);
+  a2 = A2(i,:);
+  a3 = A3(i,:);
 
+  d3 = a3 - y_vt(i,:);
+  Theta2_grad = Theta2_grad + d3' * [1 a2];
 
+  z2 = Z2(i,:);
+  d2 = Theta2(:,2:end)' * d3' .* sigmoidGradient(z2');
+  Theta1_grad = Theta1_grad + d2 * [1 a1] ;
+end
+% Theta1_grad = [zeros(hidden_layer_size,1) Theta1_grad / m];
+% Theta2_grad = [zeros(num_labels,1) Theta2_grad / m];
+Theta1_grad = Theta1_grad / m;
+Theta2_grad = Theta2_grad / m;
 
+% Part 3 -------------------------------------------------------------
 
-
-
-
-
-
-
-
-
-
-
-
-
-% -------------------------------------------------------------
 
 % =========================================================================
 
