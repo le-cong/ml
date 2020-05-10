@@ -23,10 +23,24 @@ sigma = 0.3;
 %        mean(double(predictions ~= yval))
 %
 
+C_steps=[0.01,0.03,0.1,0.3,1,3,10,30];
+sigma_steps=[0.01,0.03,0.1,0.3,1,3,10,30];
+val=zeros(length(C_steps), length(sigma_steps));
 
+for i=1:length(C_steps)
+  for j=1:length(sigma_steps)
+    model= svmTrain(X, y, C_steps(i), @(x1, x2) gaussianKernel(x1, x2, sigma_steps(j))); 
+    predictions = svmPredict(model, Xval);
+    val(i,j) = mean(double(predictions ~= yval));
+  end
+end
+[v, min_idx_C] = min(val);
+[v, min_idx_sigma] = min(v);
+C = C_steps(min_idx_C(min_idx_sigma))
+sigma = sigma_steps(min_idx_sigma)
 
-
-
+% C =  1
+% sigma =  0.10000
 
 
 % =========================================================================
