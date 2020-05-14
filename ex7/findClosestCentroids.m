@@ -20,11 +20,21 @@ idx = zeros(size(X,1), 1);
 %
 % Note: You can use a for-loop over the examples to compute this.
 %
-
-
-
-
-
+m = size(X,1);
+for i=1:m
+  minDist = 0;
+  for j=1:K
+    % X(i,:)(:)
+    % centroids(j,:)(:)
+    % tmpDist = (X(i,1)-centroids(j,1))^2 + (X(i,2)-centroids(j,2))^2
+    tmpDist = sum( (X(i,:)-centroids(j,:)) .^2 );
+    % fprintf(' %i,%i - %i \n', i, j, tmpDist)
+    if minDist==0 || tmpDist<minDist
+      minDist = tmpDist;
+      idx(i) = j;
+    end
+  end
+end
 
 
 % =============================================================
